@@ -51,7 +51,7 @@
             <category>Appearance</category>
             <description>Hide enum values matching regular expression</description>
         </property>
-        <property defaultValue="" key="placeholderText" required="false" type="string">
+        <property defaultValue="" key="placeholderText" required="false" type="translatableString">
             <caption>Placeholder text</caption>
             <category>Appearance</category>
             <description/>
@@ -121,7 +121,7 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property defaultValue="" key="requiredMessage" required="false" type="string">
+        <property defaultValue="" key="requiredMessage" required="false" type="translatableString">
             <caption>Required message</caption>
             <category>Appearance</category>
             <description/>
@@ -146,7 +146,7 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property defaultValue="" key="labelCaption" required="false" type="string">
+        <property defaultValue="" key="labelCaption" required="false" type="translatableString">
             <caption>Label caption</caption>
             <category>Appearance</category>
             <description/>
@@ -170,8 +170,13 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property defaultValue="" key="leftAddonCaption" required="false" type="string">
+        <property defaultValue="" key="leftAddonCaption" required="false" type="translatableString">
             <caption>Left add-on caption</caption>
+            <category>Appearance</category>
+            <description/>
+        </property>
+        <property defaultValue="" key="leftAddonStore" required="false" type="string">
+            <caption>Left add-on caption store</caption>
             <category>Appearance</category>
             <description/>
         </property>
@@ -180,8 +185,13 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property defaultValue="" key="rightAddonCaption" required="false" type="string">
+        <property defaultValue="" key="rightAddonCaption" required="false" type="translatableString">
             <caption>Right add-on caption</caption>
+            <category>Appearance</category>
+            <description/>
+        </property>
+        <property defaultValue="" key="rightAddonStore" required="false" type="string">
+            <caption>Right add-on caption store</caption>
             <category>Appearance</category>
             <description/>
         </property>
@@ -190,7 +200,7 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property defaultValue="" key="rightAddonButtonCaption" required="false" type="string">
+        <property defaultValue="" key="rightAddonButtonCaption" required="false" type="translatableString">
             <caption>Right add-on button caption</caption>
             <category>Appearance</category>
             <description/>
