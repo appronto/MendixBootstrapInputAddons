@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="BootstrapInputAddons.widget.BootstrapCacheAddons" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>BootstrapCacheAddons</name>
+    <description>Handling widget to retrieve settings that needs be added to the layout.</description>
+
+    <properties>
+        <property key="retrieveMF" type="microflow" required="true">
+            <caption>Result Microflow</caption>
+            <category>Data source</category>
+            <description>Getting all values that needs to be stored in the browser cache for performance.</description>
+            <returnType type="String"/>
+        </property>
+    </properties>
+</widget>
+
