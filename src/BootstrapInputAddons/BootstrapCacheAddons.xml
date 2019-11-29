@@ -3,11 +3,13 @@
     <name>BootstrapCacheAddons</name>
     <description>Handling widget to retrieve settings that needs be added to the layout.</description>
 
+    <icon />
+
     <properties>
         <property key="retrieveMF" type="microflow" required="true">
             <caption>Result Microflow</caption>
             <category>Data source</category>
-            <description>Getting all values that needs to be stored in the browser cache for performance.</description>
+            <description>Getting all values that needs to be stored in the browser cache for performance. Format is a JSON array: [{"key":"cache1", "value": "$"}]</description>
             <returnType type="String"/>
         </property>
     </properties>

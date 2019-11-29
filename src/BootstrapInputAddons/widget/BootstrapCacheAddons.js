@@ -18,16 +18,19 @@
 // Required module list. Remove unnecessary modules, you can always get them back from the boilerplate.
 define([
     "dojo/_base/declare",
+    "mendix/validator",
     "mxui/widget/_WidgetBase",
     "dijit/_TemplatedMixin",
 
-    "mxui/dom",
-    "dojo/dom",
+    "dojo/_base/kernel",
     "dojo/dom-construct",
+    "dojo/dom-attr",
     "dojo/_base/array",
     "dojo/_base/lang",
-    "dojo/text!BootstrapInputAddons/widget/template/BootstrapCacheAddons.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoConstruct, dojoArray, lang, widgetTemplate) {
+    "dojo/html",
+    "dojo/_base/event",
+    "dojo/text!BootstrapInputAddons/widget/template/BootstrapCacheAddons.html",
+], function (declare, validator, _WidgetBase, _TemplatedMixin, dojo, dojoConstruct, dojoAttr, dojoArray, lang, dojoHtml, dojoEvent, widgetTemplate) {
     "use strict";
 
     // Declare widget's prototype.
@@ -40,38 +43,47 @@ define([
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
-            logger.debug(this.id + ".constructor");
+            logger.debug(this.id + ".constructor BootstrapCacheAddons");
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
-            logger.debug(this.id + ".postCreate");
-
             this._updateRendering();
-            this._setupEvents();
+//            this._setupEvents();
         },
 
         // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
+            
+            // Only render when the Object really changes
+            if(this._contextObj && obj && this._contextObj.getGuid() != obj.getGuid())
+            {
+                // Change object
+                this._updateRendering();
+            } else if(!this._contextObj && obj)
+            {
+                // New object
+                this._updateRendering();
+            }
 
             this._contextObj = obj;
-            this._updateRendering(callback); // We're passing the callback to updateRendering to be called after DOM-manipulation
+            callback();
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
         enable: function () {
-          logger.debug(this.id + ".enable");
+        
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should disable editing. Implement to disable editing if widget is input widget.
         disable: function () {
-          logger.debug(this.id + ".disable");
+        
         },
 
         // mxui.widget._WidgetBase.resize is called when the page's layout is recalculated. Implement to do sizing calculations. Prefer using CSS instead.
         resize: function (box) {
-          logger.debug(this.id + ".resize");
+        
         },
 
         // mxui.widget._WidgetBase.uninitialize is called when the widget is destroyed. Implement to do special tear-down work.
@@ -82,7 +94,6 @@ define([
 
         // We want to stop events on a mobile device
         _stopBubblingEventOnMobile: function (e) {
-            logger.debug(this.id + "._stopBubblingEventOnMobile");
             if (typeof document.ontouchstart !== "undefined") {
                 dojoEvent.stop(e);
             }
@@ -90,24 +101,28 @@ define([
 
         // Attach events to HTML dom elements
         _setupEvents: function () {
-            logger.debug(this.id + "._setupEvents");
         },
         
         // Rerender the interface.
-        _updateRendering: function (callback) {
+        _updateRendering: function () {
             logger.debug(this.id + "._updateRendering");
             
             this._execMf(this.retrieveMF, lang.hitch(this, this._updateCache));
         },
         
         _updateCache: function(data) {
-            console.log(this.id + "._updateCache : " + data);
+            if(data){
+                //console.log(this.id +"._updateCache");
+                document.cookie = "bootstrapcache="+data+";max-age=86400";                
+            } else {
+                document.cookie = "bootstrapcache=[]";
+            }
         },
 
         _execMf: function (mf,cb) {
-            console.log(this.id + "._execMf: " + mf);
+            logger.debug(this.id + "._execMf: " + mf);
             if (mf) {
-                mx.data.action(mf, {
+                mx.data.action({
                     params: {
                         actionname: mf
                     },

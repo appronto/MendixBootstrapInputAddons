@@ -89,8 +89,7 @@ define([
         onClick: "",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
-        _formValidateListener: null,
-        _handles: null,
+//        _formValidateListener: null,
         _contextObj: null,
         _alertDiv: null,
         _leftAddonSpan: null,
@@ -103,20 +102,53 @@ define([
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
-            this._handles = [];
+        },
+        
+        _checkStoreValue: function(list, storeKey){
+            var index = list.findIndex(function(sub){
+                return sub.key === storeKey;
+            });
+            
+            var value = "";
+            
+            if(~index){
+                value =list[index].value;
+            }              
+            
+            console.log(this.id+"._checkStoreValue " + storeKey + " with value " + value + " on Index: " + index);
+            
+            return value;
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
+            console.log(this.id+".postCreate");
+            
+            var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)bootstrapcache\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+            if(cookieValue){
+//                console.log(this.id +".postCreate " + cookieValue);
+                var list = JSON.parse(cookieValue);
+                
+                if(this.leftAddonStore){
+                    this.leftAddonCaption = this._checkStoreValue(list, this.leftAddonStore);
+                }
+                if(this.rightAddonStore){
+                    this.rightAddonCaption = this._checkStoreValue(list, this.rightAddonStore);
+                }
+            }
+
             this._updateRendering();
             this._setupEvents();
         },
 
         // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         update: function (obj, callback) {
-            this._contextObj = obj;
-            this._resetSubscriptions();
-            this._updateRendering();
+            
+            if((!this._contextObj && obj) || (this._contextObj && !obj) || (this._contextObj && obj && this._contextObj.getGuid() != obj.getGuid())){
+                this._contextObj = obj;
+                this._resetSubscriptions();
+                this._updateRendering();
+            }
 
             callback();
         },
@@ -135,10 +167,13 @@ define([
 
         // mxui.widget._WidgetBase.uninitialize is called when the widget is destroyed. Implement to do special tear-down work.
         uninitialize: function () {
+            console.log(this.id+".uninitialize");
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
-            if (this._formValidateListener) {
-                this.mxform.unlisten(this._formValidateListener);
-            }
+//            if (this._formValidateListener) {
+//                this.mxform.unlisten(this._formValidateListener);
+//            }
+            this.formGroupNode.innerHTML = "";
+            this.unsubscribeAll();
         },
 
         // We want to stop events on a mobile device
@@ -374,7 +409,7 @@ define([
         _addLabel: function () {
             if (this.showLabel) {
                 dojoConstruct.destroy(this._labelNode);
-                this._labelNode = dojoConstruct.create("label", {
+                this._labelNode = dojoConstruct.create("span", {
                     "class": this._getLabelClass(),
                     "innerHTML": this._getLabelCaption()
                 });
@@ -498,7 +533,7 @@ define([
                 });
                 dojoConstruct.place(readOnlyField, this.inputNodes, "only");
             } else {
-                var readOnlyField = dojoConstruct.create("label", {
+                var readOnlyField = dojoConstruct.create("span", {
                     "innerHTML": value
                 });
                 dojoConstruct.place(readOnlyField, this.domNode, "only");
@@ -540,13 +575,13 @@ define([
         },
 
         _isValidationShown: function () {
-            logger.debug(this.id + "._isValidationShown");
+//            logger.debug(this.id + "._isValidationShown");
             return (this._alertDiv != null);
         },
 
         // Clear validations.
         _clearValidations: function () {
-            logger.debug(this.id + "._clearValidations");
+//            logger.debug(this.id + "._clearValidations");
             dojoConstruct.destroy(this._alertDiv);
             this._alertDiv = null;
             dojoClass.remove(this.inputDiv, "has-error");
@@ -728,29 +763,20 @@ define([
             }
 
             return false;
-
         },
 
         // Reset subscriptions.
         _resetSubscriptions: function () {
-            logger.debug(this.id + "._resetSubscriptions");
+//            logger.debug(this.id + "._resetSubscriptions");
             // Release handles on previous object, if any.
             this.unsubscribeAll();
 
-            if (this._formValidateListener) {
-                this.mxform.unlisten(this._formValidateListener);
-            }
+//            if (this._formValidateListener) {
+//                this.mxform.unlisten(this._formValidateListener);
+//            }
 
             // When a mendix object exists and is visible create subscribtions.
             if (this._contextObj && this._isVisible()) {
-                this._formValidateListener = this.mxform.listen("validate", dojoLang.hitch(this, function (callback, error) {
-                    logger.debug(this.id + ".validate");
-                    if (this._isValid()) {
-                        callback();
-                    } else {
-                        this._addValidation(this._validationMessage);
-                    }
-                }));
 
                 var objectHandle = this.subscribe({
                     guid: this._contextObj.getGuid(),
